@@ -14,6 +14,10 @@
 		15089B682861C27D0076975B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15089B672861C27D0076975B /* Assets.xcassets */; };
 		15089B6B2861C27D0076975B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15089B692861C27D0076975B /* LaunchScreen.storyboard */; };
 		15089B762861D4D80076975B /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15089B752861D4D80076975B /* Task.swift */; };
+		15089B7D2861F61C0076975B /* BaseTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15089B7C2861F61C0076975B /* BaseTabBarController.swift */; };
+		15089B822861F90E0076975B /* BaseListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15089B812861F90E0076975B /* BaseListController.swift */; };
+		15089B8B2861F9FE0076975B /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15089B8A2861F9FE0076975B /* SearchController.swift */; };
+		15089B8F2861FA9D0076975B /* FavoriteController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15089B8E2861FA9D0076975B /* FavoriteController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,10 @@
 		15089B6A2861C27D0076975B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		15089B6C2861C27D0076975B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		15089B752861D4D80076975B /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		15089B7C2861F61C0076975B /* BaseTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTabBarController.swift; sourceTree = "<group>"; };
+		15089B812861F90E0076975B /* BaseListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseListController.swift; sourceTree = "<group>"; };
+		15089B8A2861F9FE0076975B /* SearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
+		15089B8E2861FA9D0076975B /* FavoriteController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,15 +67,43 @@
 			isa = PBXGroup;
 			children = (
 				15089B752861D4D80076975B /* Task.swift */,
-				15089B5E2861C27A0076975B /* AppDelegate.swift */,
-				15089B602861C27A0076975B /* SceneDelegate.swift */,
-				15089B622861C27A0076975B /* ViewController.swift */,
+				15089B7B2861F5B40076975B /* Controllers */,
 				15089B672861C27D0076975B /* Assets.xcassets */,
 				15089B642861C27A0076975B /* Main.storyboard */,
 				15089B692861C27D0076975B /* LaunchScreen.storyboard */,
 				15089B6C2861C27D0076975B /* Info.plist */,
+				15089B5E2861C27A0076975B /* AppDelegate.swift */,
+				15089B602861C27A0076975B /* SceneDelegate.swift */,
+				15089B622861C27A0076975B /* ViewController.swift */,
 			);
 			path = UnsplashTestTask;
+			sourceTree = "<group>";
+		};
+		15089B7B2861F5B40076975B /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				15089B8D2861FA6D0076975B /* Favorite */,
+				15089B842861F9BE0076975B /* Search */,
+				15089B7C2861F61C0076975B /* BaseTabBarController.swift */,
+				15089B812861F90E0076975B /* BaseListController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		15089B842861F9BE0076975B /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				15089B8A2861F9FE0076975B /* SearchController.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		15089B8D2861FA6D0076975B /* Favorite */ = {
+			isa = PBXGroup;
+			children = (
+				15089B8E2861FA9D0076975B /* FavoriteController.swift */,
+			);
+			path = Favorite;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,8 +178,12 @@
 			files = (
 				15089B762861D4D80076975B /* Task.swift in Sources */,
 				15089B632861C27A0076975B /* ViewController.swift in Sources */,
+				15089B7D2861F61C0076975B /* BaseTabBarController.swift in Sources */,
+				15089B8B2861F9FE0076975B /* SearchController.swift in Sources */,
 				15089B5F2861C27A0076975B /* AppDelegate.swift in Sources */,
+				15089B822861F90E0076975B /* BaseListController.swift in Sources */,
 				15089B612861C27A0076975B /* SceneDelegate.swift in Sources */,
+				15089B8F2861FA9D0076975B /* FavoriteController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
