@@ -13,8 +13,8 @@ class BaseTabBarController: UITabBarController {
         super.viewDidLoad()
         
         viewControllers = [
-            createNavController(viewController: UIViewController(), title: "Random", imageName: ""),
-            createNavController(viewController: UIViewController(), title: "Favorite", imageName: "")
+            createNavController(viewController: SearchController(), title: "Random", imageName: ""),
+            createNavController(viewController: FavoriteController(), title: "Favorite", imageName: "")
         ]
         
     }
