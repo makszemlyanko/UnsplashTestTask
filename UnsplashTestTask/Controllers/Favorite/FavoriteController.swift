@@ -12,7 +12,7 @@ class FavoriteController: BaseListController, UICollectionViewDelegateFlowLayout
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .yellow
         
         
     }

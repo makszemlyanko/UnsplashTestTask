@@ -77,6 +77,8 @@
 			isa = PBXGroup;
 			children = (
 				15089B752861D4D80076975B /* Task.swift */,
+				15089B812861F90E0076975B /* BaseListController.swift */,
+				15089B7C2861F61C0076975B /* BaseTabBarController.swift */,
 				15536E00286373CE00B9F155 /* Helper */,
 				15536E0A28637E7E00B9F155 /* Model */,
 				15089BC8286356280076975B /* VIews */,
@@ -98,8 +100,6 @@
 			children = (
 				15089B8D2861FA6D0076975B /* Favorite */,
 				15089B842861F9BE0076975B /* Search */,
-				15089B7C2861F61C0076975B /* BaseTabBarController.swift */,
-				15089B812861F90E0076975B /* BaseListController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";

@@ -9,16 +9,48 @@ import UIKit
 
 class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
     
+    
+    fileprivate lazy var addBarButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addBarButtonTapped))
+    }()
+    
+    fileprivate lazy var actionBarButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(actionBarButtonTapped))
+    }()
+    
     fileprivate let searchController = UISearchController(searchResultsController: nil)
+    
     fileprivate let cellId = "cellId"
+    
+    // MARK: - View Did Load
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         collectionView.backgroundColor = .white
-        collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: cellId)
         
         setupSearchBar()
+        setupCollectionView()
+        
+        navigationItem.rightBarButtonItems = [
+            addBarButtonItem, actionBarButtonItem
+        ]
+    }
+    
+    // MARK: - Navigation Bar buttons
+    
+    @objc private func addBarButtonTapped() {
+        print(#function)
+    }
+    
+    @objc private func actionBarButtonTapped() {
+        print(#function)
+    }
+    
+    // MARK: - Setup UI elements
+    
+    fileprivate func setupCollectionView() {
+        collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: cellId)
     }
     
     fileprivate func setupSearchBar() {
@@ -28,6 +60,8 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
     }
+    
+    // MARK: - Setup collection items
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return .init(width: view.frame.width, height: 350)
@@ -46,3 +80,7 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     
     
 }
+
+
+
+
