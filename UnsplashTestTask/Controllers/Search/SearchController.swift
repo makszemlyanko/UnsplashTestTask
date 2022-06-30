@@ -9,6 +9,7 @@ import UIKit
 
 class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
     
+    var networkService = NetworkService()
     
     fileprivate lazy var addBarButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addBarButtonTapped))
@@ -26,15 +27,10 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         collectionView.backgroundColor = .white
-        
         setupSearchBar()
         setupCollectionView()
-        
-        navigationItem.rightBarButtonItems = [
-            addBarButtonItem, actionBarButtonItem
-        ]
+        setupNavBarButtons()
     }
     
     // MARK: - Navigation Bar buttons
@@ -49,6 +45,13 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     
     // MARK: - Setup UI elements
     
+    fileprivate func setupNavBarButtons() {
+        navigationItem.rightBarButtonItems = [
+            actionBarButtonItem,
+            addBarButtonItem
+        ]
+    }
+    
     fileprivate func setupCollectionView() {
         collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: cellId)
     }
@@ -57,8 +60,8 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
         definesPresentationContext = true
         navigationItem.searchController = self.searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.delegate = self
+        self.searchController.obscuresBackgroundDuringPresentation = false
+        self.searchController.searchBar.delegate = self
     }
     
     // MARK: - Setup collection items
@@ -77,6 +80,13 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
         return cell
     }
     
+    //MARK: - UISearchBarDelegate
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        networkService.request(searchTerm: searchText) { (_, _) in
+            print(searchText)
+        }
+    }
     
     
 }
