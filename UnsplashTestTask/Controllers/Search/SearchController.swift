@@ -9,7 +9,13 @@ import UIKit
 
 class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
     
-    var networkService = NetworkService()
+    var networkDataFetcher = DataFetcher()
+    private var timer: Timer?
+    
+    private var photos = [PhotoResult]()
+    
+    private let itemsPerRow: CGFloat = 2
+    private let sectionInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     
     fileprivate lazy var addBarButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addBarButtonTapped))
@@ -54,6 +60,9 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     
     fileprivate func setupCollectionView() {
         collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: cellId)
+        
+        collectionView.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        collectionView.contentInsetAdjustmentBehavior = .automatic
     }
     
     fileprivate func setupSearchBar() {
@@ -66,31 +75,50 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     
     // MARK: - Setup collection items
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: view.frame.width, height: 350)
-    }
-    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return photos.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! SearchResultCell
-        cell.backgroundColor = .systemPink
+        let unsplashPhoto = photos[indexPath.item]
+        cell.unsplashPhoto = unsplashPhoto
         return cell
     }
     
     //MARK: - UISearchBarDelegate
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        networkService.request(searchTerm: searchText) { (_, _) in
-            print(searchText)
-        }
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
+            self.networkDataFetcher.fetchImages(searchTerm: searchText) { [weak self] (searchRes) in
+                guard let fetchedPhotos = searchRes else { return }
+                self?.photos = fetchedPhotos.results
+                self?.collectionView.reloadData()
+            }
+        })
+    }
+
+
+    // MARK: - UICollectionViewDelegateFlowLayout
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let photo = photos[indexPath.item]
+        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+        let availableWidth = view.frame.width - paddingSpace
+        let widthPerItem = availableWidth / itemsPerRow
+        let height = CGFloat(photo.height) * widthPerItem / CGFloat(photo.width)
+        return CGSize(width: widthPerItem, height: height)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return sectionInsets
     }
     
-    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return sectionInsets.left
+    }
+
+
+
+
 }
-
-
-
-
