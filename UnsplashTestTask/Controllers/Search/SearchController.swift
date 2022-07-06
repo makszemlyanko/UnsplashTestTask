@@ -27,6 +27,10 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
         return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(actionBarButtonTapped))
     }()
     
+    fileprivate var numberOfSelectedPhotos: Int {
+        return collectionView.indexPathsForSelectedItems?.count ?? 0
+    }
+    
     fileprivate let searchController = UISearchController(searchResultsController: nil)
     
     fileprivate let cellId = "cellId"
@@ -35,10 +39,24 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         collectionView.backgroundColor = .white
+        
+        updateNavButtonState()
         setupSearchBar()
         setupCollectionView()
         setupNavBarButtons()
+    }
+    
+    fileprivate func updateNavButtonState() {
+        addBarButtonItem.isEnabled = numberOfSelectedPhotos > 0
+        actionBarButtonItem.isEnabled = numberOfSelectedPhotos > 0
+    }
+    
+    func refresh() {
+        self.selectedImages.removeAll()
+        self.collectionView.selectItem(at: nil, animated: true, scrollPosition: [])
+        updateNavButtonState()
     }
     
     // MARK: - Navigation Bar buttons
@@ -54,7 +72,7 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
         
         shareController.completionWithItemsHandler = { _, bool, _, _ in
             if bool {
-                
+                self.refresh()
             }
             
         }
@@ -78,6 +96,7 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
         
         collectionView.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         collectionView.contentInsetAdjustmentBehavior = .automatic
+        collectionView.allowsMultipleSelection = true
         
     }
     
@@ -96,6 +115,7 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        updateNavButtonState()
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! SearchResultCell
         let unsplashPhoto = photos[indexPath.item]
         cell.unsplashPhoto = unsplashPhoto
@@ -103,26 +123,31 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        updateNavButtonState()
         let cell = collectionView.cellForItem(at: indexPath) as! SearchResultCell
         guard let image = cell.photoImageView.image else { return }
         selectedImages.append(image)
     }
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        updateNavButtonState()
         let cell = collectionView.cellForItem(at: indexPath) as! SearchResultCell
         guard let image = cell.photoImageView.image else { return }
         if let index = selectedImages.firstIndex(of: image) {
             selectedImages.remove(at: index)
         }
     }
+    
     //MARK: - UISearchBarDelegate
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
             self.networkDataFetcher.fetchImages(searchTerm: searchText) { [weak self] (searchRes) in
                 guard let fetchedPhotos = searchRes else { return }
                 self?.photos = fetchedPhotos.results
                 self?.collectionView.reloadData()
+                self?.refresh()
             }
         })
     }

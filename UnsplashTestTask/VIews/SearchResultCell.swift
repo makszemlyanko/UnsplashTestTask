@@ -19,7 +19,7 @@ class SearchResultCell: UICollectionViewCell {
     }()
     
     private let check: UIImageView = {
-        let image = UIImage(named: "check")
+        let image: UIImage = #imageLiteral(resourceName: "check")
         let imageView = UIImageView(image: image)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.alpha = 0
@@ -53,6 +53,7 @@ class SearchResultCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        updateSelectedState()
         setupPhotoImageView()
         setupCheckImageView()
     }
