@@ -13,10 +13,9 @@ class BaseTabBarController: UITabBarController {
         super.viewDidLoad()
         
         viewControllers = [
-            createNavController(viewController: SearchController(), title: "Search", imageName: #imageLiteral(resourceName: "search")),
-            createNavController(viewController: FavoriteController(), title: "Favorites", imageName: #imageLiteral(resourceName: "Symbol"))
+            createNavController(viewController: FavoriteController(), title: "Favorites", imageName: #imageLiteral(resourceName: "Symbol")),
+            createNavController(viewController: SearchController(), title: "Search", imageName: #imageLiteral(resourceName: "search"))
         ]
-        
     }
     
     fileprivate func createNavController(viewController: UIViewController, title: String, imageName: UIImage) -> UIViewController {

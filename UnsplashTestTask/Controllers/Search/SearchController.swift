@@ -12,6 +12,21 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     var networkDataFetcher = DataFetcher()
     private var timer: Timer?
     
+    private let searchTermLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Please enter a search term above"
+        label.font = .boldSystemFont(ofSize: 20)
+        label.textAlignment = .center
+        label.textColor = .systemBlue
+        return label
+    }()
+    
+    private let spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .medium)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        return spinner
+    }()
+    
     private var photos = [PhotoResult]()
     
     private var selectedImages = [UIImage]()
@@ -33,8 +48,6 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     
     fileprivate let searchController = UISearchController(searchResultsController: nil)
     
-    fileprivate let cellId = "cellId"
-    
     // MARK: - View Did Load
     
     override func viewDidLoad() {
@@ -46,6 +59,10 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
         setupSearchBar()
         setupCollectionView()
         setupNavBarButtons()
+        setupSpinner()
+        
+        collectionView.addSubview(searchTermLabel)
+        searchTermLabel.fillSuperview(padding: .init(top: 150, left: 50, bottom: 0, right: 50))
     }
     
     fileprivate func updateNavButtonState() {
@@ -63,6 +80,28 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     
     @objc private func addBarButtonTapped() {
         print(#function)
+        let selectedPhotos = collectionView.indexPathsForSelectedItems?.reduce([], { (phots, indexPath) -> [PhotoResult] in
+            var mutablePhotos = phots
+            let photo = photos[indexPath.item]
+            mutablePhotos.append(photo)
+            return mutablePhotos
+        })
+        
+        let alertController = UIAlertController(title: "", message: "\(selectedPhotos!.count) photos will be added in album", preferredStyle: .alert)
+        let add = UIAlertAction(title: "Add", style: .default) { (action) in
+            let tabbar = self.tabBarController as! BaseTabBarController
+            let navVC = tabbar.viewControllers?[1] as! UINavigationController
+            let favoritesVC = navVC.topViewController as! FavoriteController
+            
+            favoritesVC.photos.append(contentsOf: selectedPhotos ?? [])
+            favoritesVC.collectionView.reloadData()
+            
+            self.refresh()
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(add)
+        alertController.addAction(cancel)
+        present(alertController, animated: true)
     }
     
     @objc private func actionBarButtonTapped(sender: UIBarButtonItem) {
@@ -84,6 +123,12 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     
     // MARK: - Setup UI elements
     
+    private func setupSpinner() {
+        view.addSubview(spinner)
+        spinner.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor).isActive = true
+        spinner.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor).isActive = true
+    }
+    
     fileprivate func setupNavBarButtons() {
         navigationItem.rightBarButtonItems = [
             actionBarButtonItem,
@@ -92,7 +137,7 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     }
     
     fileprivate func setupCollectionView() {
-        collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: SearchResultCell.cellId)
         
         collectionView.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         collectionView.contentInsetAdjustmentBehavior = .automatic
@@ -108,15 +153,17 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
         self.searchController.searchBar.delegate = self
     }
     
-    // MARK: - Setup collection items
+    // MARK: - Setup collection items: data source, delegate
+    
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        searchTermLabel.isHidden = photos.count != 0
         return photos.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         updateNavButtonState()
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! SearchResultCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchResultCell.cellId, for: indexPath) as! SearchResultCell
         let unsplashPhoto = photos[indexPath.item]
         cell.unsplashPhoto = unsplashPhoto
         return cell
@@ -171,8 +218,4 @@ class SearchController: BaseListController, UICollectionViewDelegateFlowLayout, 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return sectionInsets.left
     }
-
-
-
-
 }

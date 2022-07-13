@@ -10,7 +10,9 @@ import SDWebImage
 
 class SearchResultCell: UICollectionViewCell {
     
-     let photoImageView: UIImageView = {
+    static let cellId = "cellId"
+    
+    let photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
